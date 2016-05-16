@@ -1,0 +1,19 @@
+import time
+from datetime import date, timedelta as td
+d1 = date.today()
+d2 = date.today() - td(days=28)
+d3 = date.today() - td(days=358)
+d4 = date.today() - td(days=365)
+d5 = d3-d4
+ddd1 = [str(d2 + td(days=x)) for x in range((d1-d2).days + 1)]
+ddd2 = [str(d3 + td(days=x)) for x in range((d3-d4).days + 1)]
+ddd1.extend(ddd2)
+try:
+    for date in ddd1[:1]:
+        path = '/home/affine/Desktop/Expedia_Top/local_date='+date+'/*'
+        #print(path)
+        df1 = (sqlCtx.read.format("com.databricks.spark.csv").options(header = True, inferschema = True, delimeter = "\t").load(path))
+        df = df1.unionAll(df1)
+        print("hello")
+except:
+    print("no such file")

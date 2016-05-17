@@ -1,2 +1,27 @@
 #provides how many columns are there 
 len(df.columns) 
+#creating empty dataframes.
+import time
+from datetime import date, timedelta as td
+from pyspark.sql.types import *
+d1 = date.today()
+d2 = date.today() - td(days=28)
+d3 = date.today() - td(days=358)
+d4 = date.today() - td(days=365)
+ddd1 = [str(d2 + td(days=x)) for x in range((d1-d2).days + 1)]
+ddd2 = [str(d3 + td(days=x)) for x in range((d3-d4).days + 1)]
+ddd1.extend(ddd2)
+#creating schema
+schema = StructType([StructField("v1", StringType(), True)])
+#creating empty dataframe:
+df = sqlContext.createDataFrame(sc.emptyRDD(), schema)
+for date in ddd1:
+    print(date)
+    path = '/home/affine/Desktop/Expedia_Top/local_date='+date+'/*'
+    print(path)
+    
+    try:
+        df1 = (sqlCtx.read.format("com.databricks.spark.csv").options(header = True, inferschema = True, delimeter = "\t").load(path))
+        df = df.unionAll(df1)
+    except:
+        print('no such file')
